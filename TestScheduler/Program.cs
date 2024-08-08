@@ -1,6 +1,6 @@
 using MassTransit;
-using TestScheduler;
 using TestScheduler.Consumers;
+using TestScheduler.HostedServices;
 
 var builder = Host.CreateDefaultBuilder(args);
 
@@ -21,9 +21,9 @@ builder.ConfigureServices((hostContext, services) =>
         });
     });
 
+    // Hosted service to send a scheduled message
     services.AddHostedService<Worker>();
 });
-
 
 var host = builder.Build();
 host.Run();

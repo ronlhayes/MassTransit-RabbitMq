@@ -6,7 +6,7 @@ namespace TestScheduler.Consumers
     {
         public async Task Consume(ConsumeContext<ScheduleNotification> context)
         {
-            Console.WriteLine($"Received ScheduleNotification message with body [{context.Message.Body}] with MessageId: {context.MessageId}");
+            Console.WriteLine($"Received ScheduleNotification message at {DateTime.UtcNow.ToLongTimeString()} with Body [{context.Message.Body}]");
 
             Uri notificationService = new Uri("queue:notification-service");
             await context.ScheduleSend<SendNotification>(notificationService,
@@ -15,7 +15,8 @@ namespace TestScheduler.Consumers
                     EmailAddress = context.Message.EmailAddress,
                     Body = context.Message.Body
                 });
-            Console.WriteLine($"Sent scheduled SendNotification message to be sent at: {context.Message.DeliveryTime}");
+
+            Console.WriteLine($"Sent scheduled SendNotification message scheduled for: {context.Message.DeliveryTime.ToLongTimeString()}");
         }
     }
 }
