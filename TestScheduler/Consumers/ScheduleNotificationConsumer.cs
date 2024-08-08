@@ -8,15 +8,14 @@ namespace TestScheduler.Consumers
         {
             Console.WriteLine($"Received ScheduleNotification message at {DateTime.UtcNow.ToLongTimeString()} with Body [{context.Message.Body}]");
 
-            Uri notificationService = new Uri("queue:notification-service");
-            await context.ScheduleSend<SendNotification>(notificationService,
-                context.Message.DeliveryTime, new()
-                {
-                    EmailAddress = context.Message.EmailAddress,
-                    Body = context.Message.Body
-                });
+            var deliveryTime = DateTime.UtcNow + TimeSpan.FromSeconds(5);
+            await context.SchedulePublish<SendNotification>(deliveryTime, new()
+                            {
+                                EmailAddress = context.Message.EmailAddress,
+                                Body = context.Message.Body
+                            });
 
-            Console.WriteLine($"Sent scheduled SendNotification message scheduled for: {context.Message.DeliveryTime.ToLongTimeString()}");
+            Console.WriteLine($"Publishing scheduled SendNotification message scheduled for: {deliveryTime.ToLongTimeString()}");
         }
     }
 }

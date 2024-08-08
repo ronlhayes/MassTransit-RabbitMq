@@ -8,15 +8,12 @@ builder.ConfigureServices((hostContext, services) =>
 {
     services.AddMassTransit(x =>
     {
-        Uri schedulerEndpoint = new Uri("queue:scheduler");
-        x.AddMessageScheduler(schedulerEndpoint);
-
+        x.AddDelayedMessageScheduler();
         x.AddConsumer<ScheduleNotificationConsumer>();
         x.AddConsumer<SendNotificationConsumer>();
-
         x.UsingRabbitMq((context, cfg) =>
         {
-            cfg.UseMessageScheduler(schedulerEndpoint);
+            cfg.UseDelayedMessageScheduler();
             cfg.ConfigureEndpoints(context);
         });
     });
